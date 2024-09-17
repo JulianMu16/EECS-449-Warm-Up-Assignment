@@ -11,13 +11,13 @@ else:
     requests, = __jac_import__(target='requests', base_path=__file__, lng='py', absorb=False, mdl_alias=None, items={})
 
 def bootstrap_frontend(token: str) -> None:
-    st.write('Welcome to your Demo Agent!')
+    st.write('Welcome to Imperator!')
     if 'messages' not in st.session_state:
         st.session_state.messages = []
     for message in st.session_state.messages:
         with st.chat_message(message['role']):
             st.markdown(message['content'])
-    if (prompt := st.chat_input('What is up?')):
+    if (prompt := st.chat_input('What do you want to know about Ancient Rome?')):
         st.session_state.messages.append({'role': 'user', 'content': prompt})
         with st.chat_message('user'):
             st.markdown(prompt)

@@ -2,7 +2,7 @@ import:py streamlit as st;
 import:py requests;
 
 can bootstrap_frontend (token: str) {
-    st.write("Welcome to your Demo Agent!");
+    st.write("Welcome to Imperator!");
 
     # Initialize chat history
     if "messages" not in st.session_state {
@@ -15,7 +15,7 @@ can bootstrap_frontend (token: str) {
         }
     }
 
-    if prompt := st.chat_input("What is up?") {
+    if prompt := st.chat_input("What do you want to know about Ancient Rome?") {
         # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt});
 
