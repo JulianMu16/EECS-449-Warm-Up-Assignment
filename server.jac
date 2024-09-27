@@ -75,9 +75,68 @@ walker infer {
 }
 
 
+walker analyze_response {
+    has message: str;
+    has response: str;
+    has follow_up: str;
+
+    can analyze_for_follow_up(message: str, response: str) -> str {
+        if "more details" in response or "would you like" in response {
+            return f"Do you need more details on {message}?";
+        }
+        elif "check again" in response {
+            return "Would you like to ask for a recheck or clarification?";
+        }
+        elif "context" in response {
+            return "Should I provide more context on the topic?";
+        }
+        else {
+            return "";
+        }
+    }
+
+    can suggest_follow_up with `root entry {
+        follow_up = self.analyze_for_follow_up(message=self.message, response=self.response);
+        
+        if follow_up {
+            here.follow_up = follow_up;
+            report {
+                "suggested_follow_up": follow_up
+            };
+        } 
+        else {
+            report {
+                "suggested_follow_up": "No follow-up suggestion available."
+            };
+        }
+    }
+}
+
+
+walker follow_up_check {
+    has message: str;
+    has response: str;
+
+    can check_follow_up with `root entry {
+        follow_up_prompts = ["more details", "would you like", "need clarification", "can I assist further"];
+        
+        if any(prompt in self.response.lower() for prompt in follow_up_prompts) {
+            report {
+                "follow_up_suggestion": "It seems you might need more information. Would you like to ask a follow-up question?"
+            };
+        } else {
+            report {
+                "follow_up_suggestion": "The response seems complete. Let me know if you have any further questions."
+            };
+        }
+    }
+}
+
+
 node Chat {
     has chat_type: ChatType;
 }
+
 
 node RagChat :Chat: {
     has chat_type: ChatType = ChatType.RAG;

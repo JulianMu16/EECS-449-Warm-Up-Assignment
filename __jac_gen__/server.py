@@ -79,6 +79,31 @@ class infer(_Jac.Walker):
         if _Jac.visit_node(self, (lambda x: [i for i in x if i.chat_type == classification])((lambda x: [i for i in x if isinstance(i, Chat)])(_Jac.edge_ref(_jac_here_, target_obj=None, dir=_Jac.EdgeDir.OUT, filter_func=None, edges_only=False)))):
             pass
 
+@_Jac.make_walker(on_entry=[_Jac.DSFunc('suggest_follow_up', _Jac.RootType)], on_exit=[])
+@__jac_dataclass__(eq=False)
+class analyze_response(_Jac.Walker):
+    message: str
+    response: str
+    follow_up: str
+
+    def analyze_for_follow_up(self, message: str, response: str) -> str:
+        if 'more details' in response or 'would you like' in response:
+            return f'Do you need more details on {message}?'
+        elif 'check again' in response:
+            return 'Would you like to ask for a recheck or clarification?'
+        elif 'context' in response:
+            return 'Should I provide more context on the topic?'
+        else:
+            return ''
+
+    def suggest_follow_up(self, _jac_here_: _Jac.RootType) -> None:
+        follow_up = self.analyze_for_follow_up(message=self.message, response=self.response)
+        if follow_up:
+            _jac_here_.follow_up = follow_up
+            _Jac.report({'suggested_follow_up': follow_up})
+        else:
+            _Jac.report({'suggested_follow_up': 'No follow-up suggestion available.'})
+
 @_Jac.make_node(on_entry=[], on_exit=[])
 @__jac_dataclass__(eq=False)
 class Chat(_Jac.Node):
