@@ -1,0 +1,6 @@
+I did not have any major issues with the code along, but I did struggle implementing walkers in 
+jac for part 1. After doing some self studying online and looking over the documentation I was 
+able to get them to work. I think the code along was well structured and easy to follow, 
+I especially liked the freedom we were given when it came to choosing our LLMs, 
+since I was able to try a couple out. Overall it was enjoyable and I do appreciate 
+the suggestion to use MongoDB via Docker as it is much simpler than the manual way.
