@@ -104,6 +104,18 @@ class analyze_response(_Jac.Walker):
         else:
             _Jac.report({'suggested_follow_up': 'No follow-up suggestion available.'})
 
+@_Jac.make_walker(on_entry=[_Jac.DSFunc('check_follow_up', _Jac.RootType)], on_exit=[])
+@__jac_dataclass__(eq=False)
+class follow_up_check(_Jac.Walker):
+    message: str
+
+    def check_follow_up(self, _jac_here_: _Jac.RootType) -> None:
+        follow_up_prompts = ['more details', 'would you like', 'need clarification', 'can I assist further']
+        if self.message in follow_up_prompts:
+            _Jac.report({'follow_up_suggestion': 'It seems you might need more information. Would you like to ask a follow-up question?'})
+        else:
+            _Jac.report({'follow_up_suggestion': 'The response seems complete. Let me know if you have any further questions.'})
+
 @_Jac.make_node(on_entry=[], on_exit=[])
 @__jac_dataclass__(eq=False)
 class Chat(_Jac.Node):

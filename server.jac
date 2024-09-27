@@ -115,12 +115,11 @@ walker analyze_response {
 
 walker follow_up_check {
     has message: str;
-    has response: str;
 
     can check_follow_up with `root entry {
         follow_up_prompts = ["more details", "would you like", "need clarification", "can I assist further"];
         
-        if any(prompt in self.response.lower() for prompt in follow_up_prompts) {
+        if self.message in follow_up_prompts {
             report {
                 "follow_up_suggestion": "It seems you might need more information. Would you like to ask a follow-up question?"
             };
