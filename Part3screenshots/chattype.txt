@@ -1,0 +1,4 @@
+I have added the "TASK" state. This represents when the user is asking
+the AI how to complete a certain task. In this context, if the user is 
+working on assignment about Ancient Rome they may ask the AI for a walkthrough
+on how to outline their assignment depending on the topic.

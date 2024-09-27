@@ -7,7 +7,9 @@ glob rag_engine:RagEngine = RagEngine();
 enum ChatType {
     RAG : 'Need to use Retrievable information in specific documents to respond' = "RAG",
     QA : 'Given context is enough for an answer' = "user_qa"
+    TASK: 'Give instructions on how to solve a problem' = "task"
 }
+
 
 node Router {
     can 'route the query to the appropriate task type'
@@ -64,6 +66,7 @@ walker infer {
             router_node = here ++> Router();
             router_node ++> RagChat();
             router_node ++> QAChat();
+            router_node ++> TaskChat();
             visit router_node;
         }
     }
@@ -164,4 +167,25 @@ node QAChat :Chat: {
         here.response = respond_with_llm(here.message, here.chat_history, agent_role="You are a conversation agent designed to help users with their queries");
     }
 }
+
+
+node TASKChat :Chat: {
+    has chat_type: ChatType = ChatType.TASK;
+
+    can respond with infer entry {
+        can 'Give step by step instructions based on the current message and chat history'
+        respond_with_llm(
+            message: 'current message': str,
+            chat_history: 'chat history': list[dict],
+            agent_role: 'role of the agent responding': str
+        ) -> 'response': str by llm();
+        
+        here.response = respond_with_llm(
+            here.message,
+            here.chat_history,
+            agent_role: "You are a conversation agent designed to provide detailed instructions or solutions based on user queries"
+        );
+    }
+}
+
 

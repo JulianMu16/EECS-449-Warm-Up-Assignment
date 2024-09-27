@@ -1,0 +1,3 @@
+The infer walker can route the chatbot to any of the three chat types.
+First it will classify the chat type, and then route to the appropriate 
+one in order to continue the conversation.
